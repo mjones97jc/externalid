@@ -109,6 +109,7 @@ class block_externalid extends block_base
     public function applicable_formats()
     {
         return array(
+            'course-view' => true,
         );
     }
 
