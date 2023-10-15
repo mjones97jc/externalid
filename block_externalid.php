@@ -1,4 +1,5 @@
 <?php
+require_once($CFG->dirroot . '/user/profile/lib.php');
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -40,6 +41,7 @@ class block_externalid extends block_base
      */
     public function get_content()
     {
+        global $USER;
 
         if ($this->content !== null) {
             return $this->content;
@@ -58,7 +60,9 @@ class block_externalid extends block_base
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
-            $text = 'Please define the content text in /blocks/externalid/block_externalid.php.';
+            profile_load_data($USER);
+
+            $text = $USER->profile_field_external_id;
             $this->content->text = $text;
         }
 
