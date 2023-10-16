@@ -1,10 +1,8 @@
-# externalid #
+# externalid
 
-TODO Describe the plugin shortly here.
+Displays the user's custom profile "external_id". If the field does not exist on install, the plugin will instead display "ABC123" until the field is updated by the user.
 
-TODO Provide more detailed description here.
-
-## Installing via uploaded ZIP file ##
+## Installing via uploaded ZIP file
 
 1. Log in to your Moodle site as an admin and go to _Site administration >
    Plugins > Install plugins_.
@@ -12,7 +10,7 @@ TODO Provide more detailed description here.
    extra details if your plugin type is not automatically detected.
 3. Check the plugin validation report and finish the installation.
 
-## Installing manually ##
+## Installing manually
 
 The plugin can be also installed by putting the contents of this directory to
 
@@ -27,7 +25,7 @@ Alternatively, you can run
 
 to complete the installation from the command line.
 
-## License ##
+## License
 
 2023 Matthew Jones <matthewj@example.com>
 
@@ -38,7 +36,7 @@ version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-this program.  If not, see <https://www.gnu.org/licenses/>.
+this program. If not, see <https://www.gnu.org/licenses/>.
