@@ -1,4 +1,5 @@
 <?php
+require_once($CFG->dirroot . '/user/profile/lib.php');
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,7 +27,43 @@
 /**
  * Custom code to be run on installing the plugin.
  */
-function xmldb_block_externalid_install() {
+function xmldb_block_externalid_install()
+{
+    global $DB;
+
+    $sql = 'SELECT * FROM mdl_user_info_field WHERE shortname = ?';
+
+    if (!$DB->record_exists_sql($sql, ['external_id'])) {
+        $ins = (object) array(
+            'shortname' => 'external_id',
+            'name' => 'External ID',
+            'datatype' => 'text',
+            'descriptionformat' => 1,
+            'categoryid' => 1,
+            // 'sortorder' => 3,
+            'visible' => 2,
+            'param1' => 30,
+            'param2' => 2048,
+            'param3' => 0
+        );
+
+        $fieldid = $DB->insert_record('user_info_field', $ins);
+
+        $usersids = $DB->get_records('user', [], fields: 'id');
+
+        $usersidsarray = json_decode(json_encode($usersids), true);
+
+        foreach ($usersidsarray as $index => $id) {
+            $ins = (object) array(
+                'userid' => (int) $id['id'],
+                'fieldid' => $fieldid,
+                'data' => 'ABC123',
+                'dataformat' => 0,
+            );
+            $DB->insert_record('user_info_data', $ins);
+
+        }
+    }
 
     return true;
 }
