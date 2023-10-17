@@ -24,7 +24,6 @@ require_once($CFG->dirroot . '/user/profile/lib.php');
  */
 class block_externalid extends block_base
 {
-
     /**
      * Initializes class member variables.
      */
@@ -41,7 +40,8 @@ class block_externalid extends block_base
      */
     public function get_content()
     {
-        global $USER;
+        global $USER, $DB;
+        $text = '';
 
         if ($this->content !== null) {
             return $this->content;
@@ -61,10 +61,14 @@ class block_externalid extends block_base
             $this->content->text = $this->config->text;
         } else {
             profile_load_data($USER);
-
-            $text = $USER->profile_field_external_id;
-            $this->content->text = $text;
+            $text .= $USER->profile_field_external_id;
         }
+
+        // $text .= '<form action="" method="POST">
+        // <input type="submit" name="show" value="show">
+        // </form>';
+
+        $this->content->text = $text;
 
         return $this->content;
     }
@@ -76,6 +80,7 @@ class block_externalid extends block_base
      */
     public function specialization()
     {
+        global $USER;
 
         // Load user defined title and make sure it's never empty.
         if (empty($this->config->title)) {
@@ -83,6 +88,19 @@ class block_externalid extends block_base
         } else {
             $this->title = $this->config->title;
         }
+
+        // if (isset($_POST['show'])) {
+        //     profile_load_data($USER);
+
+        //     $user = clone ($USER);
+
+        //     $user->profile_field_show_id = !$user->profile_field_show_id;
+        //     profile_save_data($user);
+        // }
+
+        // if (isset($_POST['hide'])) {
+        //     $this->show = false;
+        // }
     }
 
     /**
