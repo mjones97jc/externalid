@@ -21,19 +21,23 @@
  * @copyright   2023 Matthew Jones <matthewj@example.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_externalid_edit_form extends block_edit_form {
+class block_externalid_edit_form extends block_edit_form
+{
 
     /**
      * Extends the configuration form for block_externalid.
      *
      * @param MoodleQuickForm $mform The form being built.
      */
-    protected function specific_definition($mform) {
+    protected function specific_definition($mform)
+    {
 
         // Section header title.
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
 
         // Please keep in mind that all elements defined here must start with 'config_'.
-
+        $mform->addElement('text', 'config_roles', get_string('blockroles', 'block_externalid'));
+        // $mform->addElement('button', 'visibility', get_string("show"));
+        // $mform->display();
     }
 }

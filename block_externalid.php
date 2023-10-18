@@ -40,8 +40,22 @@ class block_externalid extends block_base
      */
     public function get_content()
     {
-        global $USER, $DB;
+        global $COURSE, $USER, $DB;
         $text = '';
+        $context = context_course::instance($COURSE->id);
+
+        if (!empty($this->config->roles)) {
+            $userrolestr = array();
+            $userroles = get_user_roles($context, $USER->id);
+            foreach ($userroles as $role) {
+                $userrolestr[] = strtolower(role_get_name($role, $context));
+            }
+            $configroles = explode(',', $this->config->roles);
+
+            if (!array_intersect($configroles, $userrolestr)) {
+                return null;
+            }
+        }
 
         if ($this->content !== null) {
             return $this->content;

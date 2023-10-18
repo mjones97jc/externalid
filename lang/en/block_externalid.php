@@ -27,4 +27,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'External ID';
 $string['pluginname_display'] = 'External ID';
-// $string['blockstring'] = 'Enter your custom ';
+$string['blockroles'] = 'Display for role types';
