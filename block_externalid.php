@@ -1,5 +1,8 @@
 <?php
 require_once($CFG->dirroot . '/user/profile/lib.php');
+require($CFG->dirroot . '/blocks/externalid/classes/hideexternalid_form.php');
+require($CFG->dirroot . '/blocks/externalid/classes/showexternalid_form.php');
+// require('../classes/externalid_form.php');
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -40,9 +43,13 @@ class block_externalid extends block_base
      */
     public function get_content()
     {
-        global $COURSE, $USER, $DB;
+        global $COURSE, $USER, $DB, $OUTPUT;
         $text = '';
         $context = context_course::instance($COURSE->id);
+        $mformshow = new showexternalid_form();
+        $mformhide = new hideexternalid_form();
+        $formdatahide = $mformhide->get_data();
+        $formdatashow = $mformshow->get_data();
 
         if (!empty($this->config->roles)) {
             $userrolestr = array();
@@ -50,6 +57,7 @@ class block_externalid extends block_base
             foreach ($userroles as $role) {
                 $userrolestr[] = strtolower(role_get_name($role, $context));
             }
+
             $configroles = explode(',', $this->config->roles);
 
             if (!array_intersect($configroles, $userrolestr)) {
@@ -73,14 +81,23 @@ class block_externalid extends block_base
 
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
+
+        } else if ($formdatahide) {
+            $text .= '*Your ID is now hidden*';
+            $text .= $mformshow->render();
+
+        } else if ($formdatashow) {
+            profile_load_data($USER);
+
+            $text .= $USER->profile_field_external_id;
+            $text .= $mformhide->render();
+
         } else {
             profile_load_data($USER);
-            $text .= $USER->profile_field_external_id;
-        }
 
-        // $text .= '<form action="" method="POST">
-        // <input type="submit" name="show" value="show">
-        // </form>';
+            $text .= $USER->profile_field_external_id;
+            $text .= $mformhide->render();
+        }
 
         $this->content->text = $text;
 
@@ -102,19 +119,6 @@ class block_externalid extends block_base
         } else {
             $this->title = $this->config->title;
         }
-
-        // if (isset($_POST['show'])) {
-        //     profile_load_data($USER);
-
-        //     $user = clone ($USER);
-
-        //     $user->profile_field_show_id = !$user->profile_field_show_id;
-        //     profile_save_data($user);
-        // }
-
-        // if (isset($_POST['hide'])) {
-        //     $this->show = false;
-        // }
     }
 
     /**

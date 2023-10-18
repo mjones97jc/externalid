@@ -37,7 +37,5 @@ class block_externalid_edit_form extends block_edit_form
 
         // Please keep in mind that all elements defined here must start with 'config_'.
         $mform->addElement('text', 'config_roles', get_string('blockroles', 'block_externalid'));
-        // $mform->addElement('button', 'visibility', get_string("show"));
-        // $mform->display();
     }
 }

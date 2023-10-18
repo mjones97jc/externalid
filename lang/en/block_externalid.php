@@ -28,3 +28,5 @@ defined('MOODLE_INTERNAL') || die();
 $string['pluginname'] = 'External ID';
 $string['pluginname_display'] = 'External ID';
 $string['blockroles'] = 'Display for role types';
+$string['showexternalid'] = 'Show external ID';
+$string['hideexternalid'] = 'Hide external ID';
