@@ -50,6 +50,8 @@ class block_externalid extends block_base
         $mformhide = new hideexternalid_form();
         $formdatahide = $mformhide->get_data();
         $formdatashow = $mformshow->get_data();
+        $hidepreference = $DB->get_record('externalid_visibility', ['userid' => $USER->id]);
+        $hidepreference = json_decode(json_encode($hidepreference), true);
 
         if (!empty($this->config->roles)) {
             $userrolestr = array();
@@ -83,20 +85,30 @@ class block_externalid extends block_base
             $this->content->text = $this->config->text;
 
         } else if ($formdatahide) {
-            $text .= '*Your ID is now hidden*';
+            $DB->update_record('externalid_visibility', ['id' => $hidepreference['id'], 'userid' => $USER->id, 'hide' => 1]);
+
+            $text .= get_string('hiddenid', 'block_externalid');
             $text .= $mformshow->render();
 
         } else if ($formdatashow) {
+            $DB->update_record('externalid_visibility', ['id' => $hidepreference['id'], 'userid' => $USER->id, 'hide' => 0]);
+
             profile_load_data($USER);
 
             $text .= $USER->profile_field_external_id;
             $text .= $mformhide->render();
 
         } else {
-            profile_load_data($USER);
+            if (!$hidepreference['hide']) {
+                profile_load_data($USER);
 
-            $text .= $USER->profile_field_external_id;
-            $text .= $mformhide->render();
+                $text .= $USER->profile_field_external_id;
+                $text .= $mformhide->render();
+
+            } else {
+                $text .= get_string('hiddenid', 'block_externalid');
+                $text .= $mformshow->render();
+            }
         }
 
         $this->content->text = $text;
