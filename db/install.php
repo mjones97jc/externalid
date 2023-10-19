@@ -32,6 +32,8 @@ function xmldb_block_externalid_install()
     global $DB;
 
     $sql = 'SELECT * FROM mdl_user_info_field WHERE shortname = ?';
+    $usersids = $DB->get_records('user', [], fields: 'id');
+    $usersidsarray = json_decode(json_encode($usersids), true);
 
     if (!$DB->record_exists_sql($sql, ['external_id'])) {
         $ins = (object) array(
@@ -49,10 +51,6 @@ function xmldb_block_externalid_install()
 
         $fieldid = $DB->insert_record('user_info_field', $ins);
 
-        $usersids = $DB->get_records('user', [], fields: 'id');
-
-        $usersidsarray = json_decode(json_encode($usersids), true);
-
         foreach ($usersidsarray as $index => $id) {
             $ins = (object) array(
                 'userid' => (int) $id['id'],
@@ -63,6 +61,14 @@ function xmldb_block_externalid_install()
             $DB->insert_record('user_info_data', $ins);
 
         }
+    }
+
+    foreach ($usersidsarray as $index => $id) {
+        $ins = (object) array(
+            'userid' => (int) $id['id']
+        );
+        $DB->insert_record('externalid_visibility', $ins);
+
     }
 
     return true;
