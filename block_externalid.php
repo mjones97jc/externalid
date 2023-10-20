@@ -25,13 +25,11 @@ require($CFG->dirroot . '/blocks/externalid/classes/showexternalid_form.php');
  * @copyright   2023 Matthew Jones <matthewj@example.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_externalid extends block_base
-{
+class block_externalid extends block_base {
     /**
      * Initializes class member variables.
      */
-    public function init()
-    {
+    public function init() {
         // Needed by Moodle to differentiate between blocks.
         $this->title = get_string('pluginname', 'block_externalid');
     }
@@ -41,18 +39,21 @@ class block_externalid extends block_base
      *
      * @return stdClass The block contents.
      */
-    public function get_content()
-    {
+    public function get_content() {
         global $COURSE, $USER, $DB, $OUTPUT;
         $text = '';
         $context = context_course::instance($COURSE->id);
+
+        //Initialize the buttons to show or hide the external ID.
         $mformshow = new showexternalid_form();
         $mformhide = new hideexternalid_form();
         $formdatahide = $mformhide->get_data();
         $formdatashow = $mformshow->get_data();
-        $hidepreference = $DB->get_record('externalid_visibility', ['userid' => $USER->id]);
+
+        $hidepreference = $DB->get_record('externalid_visibility', ['userid' => $USER->id]); // Get the current visibility preference for the ID.
         $hidepreference = json_decode(json_encode($hidepreference), true);
 
+        //Check if the current user role is allowed to view the external ID.
         if (!empty($this->config->roles)) {
             $userrolestr = array();
             $userroles = get_user_roles($context, $USER->id);
@@ -84,13 +85,13 @@ class block_externalid extends block_base
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
 
-        } else if ($formdatahide) {
+        } else if ($formdatahide) { //Check if the 'hide' button has been pressed.
             $DB->update_record('externalid_visibility', ['id' => $hidepreference['id'], 'userid' => $USER->id, 'hide' => 1]);
 
             $text .= get_string('hiddenid', 'block_externalid');
             $text .= $mformshow->render();
 
-        } else if ($formdatashow) {
+        } else if ($formdatashow) { //Check if the 'show' button has been pressed.
             $DB->update_record('externalid_visibility', ['id' => $hidepreference['id'], 'userid' => $USER->id, 'hide' => 0]);
 
             profile_load_data($USER);
@@ -98,7 +99,7 @@ class block_externalid extends block_base
             $text .= $USER->profile_field_external_id;
             $text .= $mformhide->render();
 
-        } else {
+        } else { //On the initial rendering of the page, display the previous button pressed preference.
             if (!$hidepreference['hide']) {
                 profile_load_data($USER);
 
@@ -121,8 +122,7 @@ class block_externalid extends block_base
      *
      * The function is called immediately after init().
      */
-    public function specialization()
-    {
+    public function specialization() {
         global $USER;
 
         // Load user defined title and make sure it's never empty.
@@ -138,8 +138,7 @@ class block_externalid extends block_base
      *
      * @return bool True if multiple instances are allowed, false otherwise.
      */
-    public function instance_allow_multiple()
-    {
+    public function instance_allow_multiple() {
         return true;
     }
 
@@ -148,8 +147,7 @@ class block_externalid extends block_base
      *
      * @return bool True if the global configuration is enabled.
      */
-    public function has_config()
-    {
+    public function has_config() {
         return true;
     }
 
@@ -158,15 +156,13 @@ class block_externalid extends block_base
      *
      * @return string[] Array of pages and permissions.
      */
-    public function applicable_formats()
-    {
+    public function applicable_formats() {
         return array(
             'course-view' => true,
         );
     }
 
-    function _self_test()
-    {
+    function _self_test() {
         return true;
     }
 }

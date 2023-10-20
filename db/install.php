@@ -27,14 +27,14 @@ require_once($CFG->dirroot . '/user/profile/lib.php');
 /**
  * Custom code to be run on installing the plugin.
  */
-function xmldb_block_externalid_install()
-{
+function xmldb_block_externalid_install() {
     global $DB;
 
     $sql = 'SELECT * FROM mdl_user_info_field WHERE shortname = ?';
     $usersids = $DB->get_records('user', [], fields: 'id');
     $usersidsarray = json_decode(json_encode($usersids), true);
 
+    //If the external ID profiled field is not present in the database, create it.
     if (!$DB->record_exists_sql($sql, ['external_id'])) {
         $ins = (object) array(
             'shortname' => 'external_id',
@@ -51,6 +51,7 @@ function xmldb_block_externalid_install()
 
         $fieldid = $DB->insert_record('user_info_field', $ins);
 
+        //Populate the external ID profile field with 'ABC123' for each and every current user.
         foreach ($usersidsarray as $index => $id) {
             $ins = (object) array(
                 'userid' => (int) $id['id'],
@@ -63,6 +64,7 @@ function xmldb_block_externalid_install()
         }
     }
 
+    //Populated the external_visibility table for hiding or showing the external ID.
     foreach ($usersidsarray as $index => $id) {
         $ins = (object) array(
             'userid' => (int) $id['id']
